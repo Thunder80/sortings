@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Sortings</title>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js" integrity="sha256-KzZiKy0DWYsnwMF+X1DvQngQ2/FxF7MF3Ff72XcpuPs=" crossorigin="anonymous"></script>
+	<link href="https://fonts.googleapis.com/css?family=Montserrat&display=swap" rel="stylesheet">
+	<style type="text/css">
+		*{
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+			font-family: 'Montserrat', sans-serif;;
+		}
+		:root{
+			--primary-dark: #1b262c;
+			--secondary-dark: #0f4c75;
+			--primary-light: #bbe1fa;
+			--secondary-light: #3282b8;
+		}
+		#container{
+			width: 100vw;
+			height: 100vh;
+			background-color: var(--primary-dark);
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		}
+
+		#sidebar{
+			background-color: var(--secondary-dark);
+			width: 230px;
+			height: 100%;
+			padding: 20px;
+		}
+
+		.heading{
+			font-size: 18px;
+			font-weight: 800;
+			color: var(--primary-light);
+			letter-spacing: 5px;
+			text-transform: uppercase;
+			border-bottom: 2px solid var(--primary-light);
+			margin-top: 20px;
+		}
+
+		.card{
+			margin-top: 30px;
+			margin-right: auto;
+			margin-left: auto;
+			width: 150px;
+			padding: 10px;
+			border-radius: 7px;
+			background-color: var(--secondary-light);
+			transition: background-color .3s ease;
+			cursor: pointer;
+			text-align: center;
+		}
+
+		.card p{
+			color: var(--primary-light);
+		}
+
+		#add p::after, #add p::before{
+			content: "";
+			width: 3px;
+			height: 20px;
+			background-color: var(--primary-light);
+			position: absolute;
+			top: 8px;
+			right: 15px;
+		}
+
+		#add p::after{
+			transform: rotate(90deg);
+		}
+
+		#add{
+			opacity: 1;
+			transition: all .5s ease;
+		}
+
+		.card:hover{
+			background-color: var(--primary-dark);
+		}
+
+		#sort-area{
+			padding: 30px 10px 40px 10px;
+			width: calc(100% - 230px);
+			height: 100%;
+			position: relative;
+		}
+
+		.bucket{
+			width: 100px;
+			min-width: 100px;
+			height: 100px;
+			text-align: center;
+			border-bottom: 2px solid var(--primary-light);
+			border-left: 2px solid var(--primary-light);
+			border-right: 2px solid var(--primary-light);
+			color: var(--primary-light);
+			margin-right: 5px;
+			margin-left: 5px;
+			margin-bottom: 10px;
+			border-radius: 0px 0px 7px 7px;
+		}
+
+		.bucket p{
+			padding-top: 50px;
+		}
+
+		#buckets{
+			display: flex;
+			flex-wrap: wrap;
+			justify-content: center;
+			height: 30%;
+		}
+
+		#inputs{
+			width: 100%;
+			height: 50%;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			flex-wrap: wrap;
+		}
+
+		.input{
+			background-color: var(--secondary-light);
+			width: 40px;
+			height: 40px;
+			border-radius: 50%;
+			font-size: 14px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			color: var(--primary-light);
+			margin: 5px;
+			position: fixed;
+			opacity: 0;
+			transition: all 1s ease;
+		}
+
+		#play, #close{
+			width: 50px;
+			height: 50px;
+			border-radius: 50%;
+			background-color: var(--secondary-light);
+			padding: 10px;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			color: var(--primary-light);
+			margin: 20px auto;
+			cursor: pointer;
+			transition: background-color .5s ease;
+		}
+
+		#close{
+			font-size: 14px;
+			flex-direction: column;
+		}
+
+		#play:hover, #close:hover{
+			background-color: var(--primary-dark);
+		}
+
+	</style>
+</head>
+<body>
+	<div id="container">
+		<div id="sidebar">
+			<p class="heading">Sortings</p>
+			<div class="card">
+				<p>Radix Sort</p>
+			</div>
+			<p class="heading">Input</p>
+			<div class="card" id="add" style="position: relative;">
+				<p style="text-align: left;">Add Number</p>
+			</div>
+			<div class="card" id="random" style="position: relative;">
+				<p>Random Input</p>
+			</div>
+			<div id="play">
+				<i class="fas fa-play"></i>
+			</div>
+			<div id="close">
+				<i class="fas fa-stop"></i>
+				Reset
+			</div>
+		</div>
+		<div id="sort-area">
+			<div id="buckets">
+				<div class="bucket" id="bucket0">
+					<p>0</p>
+				</div>
+				<div class="bucket" id="bucket1">
+					<p>1</p>
+				</div>
+				<div class="bucket" id="bucket2">
+					<p>2</p>
+				</div>
+				<div class="bucket" id="bucket3">
+					<p>3</p>
+				</div>
+				<div class="bucket" id="bucket4">
+					<p>4</p>
+				</div>
+				<div class="bucket" id="bucket5">
+					<p>5</p>
+				</div>
+				<div class="bucket" id="bucket6">
+					<p>6</p>
+				</div>
+				<div class="bucket" id="bucket7">
+					<p>7</p>
+				</div>
+				<div class="bucket" id="bucket8">
+					<p>8</p>
+				</div>
+				<div class="bucket" id="bucket9">
+					<p>9</p>
+				</div>
+			</div>
+			<div id="inputs">
+				
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript">
+		$(document).ready(() => {
+			let buckets = document.getElementsByClassName("bucket");
+			let insertBucket = true;
+			let count = 0;
+			let largest = 0;
+			let digit = 0;
+			let nodes = [];
+			let nodesTemp = [];
+			let top = 400, left = 280;
+			let d = [];
+			let bucketCounter = 0;
+			let ani;
+			let playing = false;
+			for(item of buckets) {
+				d.push(item.getBoundingClientRect());
+			}
+
+			buckets = [];
+
+			function addNumber(n)
+			{
+				let index = nodes.length;
+				let item = $(`<div class="input" id="input${index}">${n}</div>`);
+				$("#inputs").append(item);
+
+				$("#input"+index).css({"top": top+"px", "left": left+"px"});
+
+				$("#input"+index).animate({opacity: "+=1"}, 100, () => {
+
+				} );
+
+				left += 60;
+				if(left >= screen.width - 60)
+				{
+					top += 60;
+					left = 280;
+				}
+				nodes.push(n);
+			}
+			
+			$("#add").click(function() {
+				if(nodes.length < 40)
+				{
+					let n = prompt("Enter a number(4 digits max and positive integers only):");
+					if(n != null && n.length > 4)
+					{
+						alert("4 digit max");
+						return;
+					}
+					n = parseInt(n);
+					if(n != null && n != "" && n != NaN)
+					{
+						addNumber(n);
+					}
+				}
+				else
+					alert("Not more than 40 numbers allowed");
+			});
+			
+			$("#random").click(() => {
+				for(let i = 0;i < 10;i++)
+					addNumber(Math.floor(Math.random() * 999) + 1);
+			})
+
+			$("#close").click(() => {
+				clearInterval(ani);
+				nodes = [];
+				nodesTemp = [];
+				playing = false;
+				$("#inputs").html("");
+				top = 400;
+				left = 280;
+			})
+			$("#play").click(() => {
+				if(playing)
+					return false;
+				function makeSameLength(nodes){
+					for(let i = 0;i < nodes.length;i++)
+					{
+						nodes[i] = String(nodes[i]);
+						largest = nodes[i].length > largest ? nodes[i].length:largest;
+					}
+					digit = largest;
+					for(let i = 0;i < nodes.length;i++)
+					{
+						let diff = largest - nodes[i].length;
+						for(let j = 0;j < diff;j++)
+							nodes[i] = "0" + nodes[i];
+					}
+					return nodes;
+				}
+
+				nodes = makeSameLength(nodes);
+				for(let i = 0;i < nodes.length;i++)
+					nodesTemp.push(i);
+				top = 400;
+				left = 280;
+				playing = true;
+				ani = setInterval(() => {
+					if(digit <= 0)
+					{	
+						clearInterval(ani);
+						alert("Sorted");
+						return;
+					}
+					if(insertBucket)
+					{
+						let bucketNo = parseInt(nodes[nodesTemp[count]].charAt(digit-1));
+						insertToBucket(nodesTemp[count], d[bucketNo]);
+						if(buckets[bucketNo] === undefined)
+							buckets[bucketNo] = [];
+						buckets[bucketNo].push(nodesTemp[count]);
+						count++;
+						if(count >= nodes.length)
+						{
+							insertBucket = false;
+							count = 0;
+							nodesTemp = [];
+						}
+					}
+					else
+					{
+						if(buckets[bucketCounter] != undefined)
+						{
+							if(buckets[bucketCounter].length > 0)
+							{
+								let index = buckets[bucketCounter].shift();
+								takeFromBucket(index);
+								nodesTemp.push(index);
+							}
+							else
+							{	
+								bucketCounter++;
+								// $("h7").remove();
+							}
+						}
+						else
+						{
+							bucketCounter++;
+							// $("h7").remove();
+						}
+						if(bucketCounter > 9)
+						{
+							bucketCounter = 0;
+							insertBucket = true;
+							buckets = [];
+							digit--;
+							top = 400;
+							left = 280;
+						}
+					}
+				}, 2000);
+			});
+
+			function insertToBucket(node, bucket)
+			{
+				let top = bucket.top + bucket.height/2;
+				let left = bucket.left + bucket.width/2;
+				$("#input"+node).css({"top": top+"px", "left": left+"px"});
+			}
+
+			function takeFromBucket(node)
+			{
+				$("#input"+node).css({"top": top+"px", "left": left+"px"});
+				left += 60;
+				if(left >= screen.width - 60)
+				{
+					top += 60;
+					left = 280;
+				}
+			}
+			
+		});
+	</script>
+</body>
+</html>
